@@ -4,9 +4,13 @@ mod display;
 use structopt::StructOpt;
 use url::Url;
 
+const VERSION: &str = "0.1.1";
+
 /** CLI API */
 #[derive(StructOpt, Debug)]
 enum Cli {
+    /// Print the version of skymarcher
+    Version {},
     /// Get a card at random =)
     Random {},
     /// Get a card from a specific set
@@ -32,6 +36,11 @@ fn req(url: Url) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+fn version() -> Result<(), Box<dyn std::error::Error>> {
+    println!("{}", VERSION);
+    Ok(())
+}
+
 fn random() -> Result<(), Box<dyn std::error::Error>> {
     let _ = req(build_query("cards/random/")?)?;
     Ok(())
@@ -50,6 +59,7 @@ fn card(set: String, number: u32) -> Result<(), Box<dyn std::error::Error>> {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::from_args();
     match args {
+        Cli::Version {} => version(),
         Cli::Random {} => random(),
         Cli::Card { set, number } => card(set, number),
     }
